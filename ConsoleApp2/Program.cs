@@ -54,12 +54,20 @@ namespace ConsoleApp2
                     var category = Console.ReadLine().Trim();
                     Item item = new Item { Name = itemName, Category = category, Price = itemPrice};
                     db.Item.Add(item);
-                    db.SaveChanges(); 
+                    if ( db.SaveChanges() > 0)
+                    {
+                        Successful("Successfully created"); 
+                    }
+                    else
+                    {
+                        Error("Error : something went wrong"); 
+                    }
+                    PressAnyKey(); 
                 }
             }
             catch( Exception ex)
             {
-                Console.WriteLine(ex.Message); 
+                Error($"Error: {ex.Message}");
             }
         }
         private static void Read(string com = "null")
@@ -70,10 +78,30 @@ namespace ConsoleApp2
                 {
                     var items = db.Item.ToList();
                     // Show items; 
-                    Console.WriteLine("Item ID..................Item Name...............Item Price..................Item Category"); 
+                    Console.WriteLine("Item ID\t\tItem Name\t\tItem Price\t\tItem Category"); 
                     foreach ( var item in items)
                     {
-                        Console.WriteLine($"{item.Id}........{item.Name}.........{item.Price}........{item.Category}"); 
+                        var id = item.Id.ToString().Trim();
+                        var name = item.Name.ToString().Trim();
+                        var price = item.Price.ToString().Trim();
+                        var category = item.Category.ToString().Trim();
+
+                        Console.Write($"{id}"); 
+                        if ( id.Length < 2)
+                        {
+                            Console.Write(" "); 
+                        }
+                        Console.Write($"\t\t{name}"); 
+                        for ( int i = 0; i < 9 - name.Length; i++)
+                        {
+                            Console.Write(" "); 
+                        }
+                        Console.Write($"\t\t{price}"); 
+                        for ( int i = 0; i < 10 - price.Length; i++)
+                        {
+                            Console.Write(" ");
+                        }
+                        Console.WriteLine($"\t\t{category}");
                     }
                     if ( com == "null")
                     {
@@ -84,7 +112,7 @@ namespace ConsoleApp2
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                Error($"Error: {ex.Message}");
             }
         }
         private static void Update()
@@ -104,7 +132,14 @@ namespace ConsoleApp2
                         Console.Write("Item Price: ");
                         var price = Console.ReadLine().Trim();
                         item.Price = price;
-                        db.SaveChanges();
+                        if (db.SaveChanges() > 0)
+                        {
+                            Successful("Successfully updated");
+                        }
+                        else
+                        {
+                            Error("Error : something went wrong");
+                        }
                         PressAnyKey();
                     }
 
@@ -112,7 +147,7 @@ namespace ConsoleApp2
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                Error($"Error: {ex.Message}");
             }
         }
         private static void Delete()
@@ -133,8 +168,14 @@ namespace ConsoleApp2
                             if (item != null)
                             {
                                 db.Item.Remove(item);
-                                db.SaveChanges(); 
-                                Console.WriteLine("Item Removed");
+                                if (db.SaveChanges() > 0)
+                                {
+                                    Successful("Successfully removed");
+                                }
+                                else
+                                {
+                                    Error("Error : something went wrong");
+                                }
                                 PressAnyKey();
                             }
                             break; 
@@ -145,13 +186,26 @@ namespace ConsoleApp2
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                Error($"Error: {ex.Message}"); 
             }
         }
         private static void PressAnyKey()
         {
             Console.WriteLine("Press any key to continue.....");
             Console.ReadKey(); 
+        }
+
+        private static void Successful ( string text )
+        {
+            Console.ForegroundColor = ConsoleColor.DarkGreen;
+            Console.WriteLine(text);
+            Console.ResetColor(); 
+        }
+        private static void Error(string text)
+        {
+            Console.ForegroundColor = ConsoleColor.DarkRed;
+            Console.WriteLine(text);
+            Console.ResetColor(); 
         }
     }
    
