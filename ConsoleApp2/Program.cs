@@ -13,6 +13,10 @@ namespace ConsoleApp2
         {
             bool working = true;
 
+            using (var db = new AcademyContext())
+            {
+                var shop = db.Shop.Include(i => i.Item).ToList(); 
+            }
 
             while ( working)
             {
@@ -62,12 +66,15 @@ namespace ConsoleApp2
                     {
                         Error("Error : something went wrong"); 
                     }
-                    PressAnyKey(); 
                 }
             }
             catch( Exception ex)
             {
                 Error($"Error: {ex.Message}");
+            }
+            finally
+            {
+                PressAnyKey();
             }
         }
         private static void Read(string com = "null")
@@ -77,6 +84,7 @@ namespace ConsoleApp2
                 using (AcademyContext db = new AcademyContext())
                 {
                     var items = db.Item.ToList();
+                    var shops = db.Shop.ToList(); 
                     // Show items; 
                     Console.WriteLine("Item ID\t\tItem Name\t\tItem Price\t\tItem Category"); 
                     foreach ( var item in items)
@@ -103,16 +111,25 @@ namespace ConsoleApp2
                         }
                         Console.WriteLine($"\t\t{category}");
                     }
-                    if ( com == "null")
+                    Console.Write("\n\n\n"); 
+                    foreach( var shop in shops)
                     {
-                        PressAnyKey();
+                        Console.WriteLine($"{shop.Id}, {shop.Item}, {shop.ItemId}"); 
                     }
+                    
 
                 }
             }
             catch (Exception ex)
             {
                 Error($"Error: {ex.Message}");
+            }
+            finally
+            {
+                if (com == "null")
+                {
+                    PressAnyKey();
+                }
             }
         }
         private static void Update()
@@ -140,7 +157,6 @@ namespace ConsoleApp2
                         {
                             Error("Error : something went wrong");
                         }
-                        PressAnyKey();
                     }
 
                 }
@@ -148,6 +164,10 @@ namespace ConsoleApp2
             catch (Exception ex)
             {
                 Error($"Error: {ex.Message}");
+            }
+            finally
+            {
+                PressAnyKey();
             }
         }
         private static void Delete()
@@ -176,7 +196,6 @@ namespace ConsoleApp2
                                 {
                                     Error("Error : something went wrong");
                                 }
-                                PressAnyKey();
                             }
                             break; 
                         }
@@ -187,6 +206,10 @@ namespace ConsoleApp2
             catch (Exception ex)
             {
                 Error($"Error: {ex.Message}"); 
+            }
+            finally
+            {
+                PressAnyKey();
             }
         }
         private static void PressAnyKey()
