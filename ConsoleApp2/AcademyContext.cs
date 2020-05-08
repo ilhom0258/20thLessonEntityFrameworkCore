@@ -31,8 +31,6 @@ namespace ConsoleApp2
         {
             modelBuilder.Entity<Item>(entity =>
             {
-                entity.Property(e => e.Id).ValueGeneratedNever();
-
                 entity.Property(e => e.Category)
                     .IsRequired()
                     .HasMaxLength(50);
@@ -48,8 +46,6 @@ namespace ConsoleApp2
 
             modelBuilder.Entity<Shop>(entity =>
             {
-                entity.Property(e => e.Id).HasMaxLength(50);
-
                 entity.Property(e => e.Category)
                     .IsRequired()
                     .HasMaxLength(50);
@@ -58,7 +54,7 @@ namespace ConsoleApp2
                     .WithMany(p => p.Shop)
                     .HasForeignKey(d => d.ItemId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Shop_Item");
+                    .HasConstraintName("FK_Shop_Item1");
             });
 
             OnModelCreatingPartial(modelBuilder);
